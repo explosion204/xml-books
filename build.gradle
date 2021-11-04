@@ -4,7 +4,6 @@ plugins {
 }
 
 group = 'com.karnyshov'
-sourceCompatibility = '17'
 
 configurations {
     compileOnly {
