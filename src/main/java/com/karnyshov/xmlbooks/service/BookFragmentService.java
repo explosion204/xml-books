@@ -19,14 +19,14 @@ public class BookFragmentService {
         this.bookFragmentRepository = bookFragmentRepository;
     }
 
-    public PaginationModel<BookFragmentDto> getAll(PageContext pageContext) {
+    public PaginationModel<BookFragmentDto> findAll(PageContext pageContext) {
         PageRequest pageRequest = pageContext.toPageRequest();
         Page<BookFragmentDto> page = bookFragmentRepository.findAll(pageRequest)
                 .map(BookFragmentDto::new);
         return PaginationModel.fromPage(page);
     }
 
-    public DetailedBookFragmentDto get(Long id) {
+    public DetailedBookFragmentDto findById(Long id) {
         BookFragment fragment = bookFragmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BookFragment.class));
         return new DetailedBookFragmentDto(fragment);

@@ -29,13 +29,13 @@ public class BookFragmentController {
             @RequestParam(required = false) Integer pageSize
     ) {
         PageContext pageContext = PageContext.of(page, pageSize);
-        PaginationModel<BookFragmentDto> paginationModel = bookFragmentService.getAll(pageContext);
+        PaginationModel<BookFragmentDto> paginationModel = bookFragmentService.findAll(pageContext);
         return new ResponseEntity<>(paginationModel, OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DetailedBookFragmentDto> get(@PathVariable("id") Long id) {
-        DetailedBookFragmentDto dto = bookFragmentService.get(id);
+        DetailedBookFragmentDto dto = bookFragmentService.findById(id);
         return new ResponseEntity<>(dto, OK);
     }
 }
