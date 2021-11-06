@@ -9,5 +9,4 @@ public class XmlBooksApplication {
     public static void main(String[] args) {
         SpringApplication.run(XmlBooksApplication.class, args);
     }
-
 }

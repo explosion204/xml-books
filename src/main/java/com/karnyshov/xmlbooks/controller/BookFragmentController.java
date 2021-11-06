@@ -2,7 +2,6 @@ package com.karnyshov.xmlbooks.controller;
 
 import com.karnyshov.xmlbooks.service.BookFragmentService;
 import com.karnyshov.xmlbooks.service.dto.BookFragmentDto;
-import com.karnyshov.xmlbooks.service.dto.DetailedBookFragmentDto;
 import com.karnyshov.xmlbooks.service.pagination.PageContext;
 import com.karnyshov.xmlbooks.service.pagination.PaginationModel;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +33,8 @@ public class BookFragmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DetailedBookFragmentDto> get(@PathVariable("id") Long id) {
-        DetailedBookFragmentDto dto = bookFragmentService.findById(id);
-        return new ResponseEntity<>(dto, OK);
+    public ResponseEntity<BookFragmentDto> get(@PathVariable("id") String id) {
+        BookFragmentDto fragmentDto = bookFragmentService.findById(id);
+        return new ResponseEntity<>(fragmentDto, OK);
     }
 }

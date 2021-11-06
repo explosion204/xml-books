@@ -9,10 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BookFragment {
     @Id
-    private Long id;
+    private String id;
     private String type;
     private String title;
     private String body;
+    private String nextFragmentId;
 }
