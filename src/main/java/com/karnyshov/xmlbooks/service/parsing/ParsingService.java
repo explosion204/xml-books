@@ -29,8 +29,8 @@ public class ParsingService {
     private static final Logger logger = LoggerFactory.getLogger(ParsingService.class);
     private static final Pattern contentLinkPattern = Pattern.compile("<\\?content-link file=\"(.+)\"\\?>");
 
+
     public List<BookFragmentDtoNode> parseXml(List<String> fileNames) {
-        // TODO: 11/5/2021 xsd
         Map<String, BookFragmentDtoNode> nodeMap = new HashMap<>();
         Map<String, String> fileReferences = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class ParsingService {
                 parseBookFragment(fileName, fileReferences, nodeMap);
             }
         } catch (XMLStreamException e) {
-            logger.error("Unable to parse book fragment: ", e);
+            logger.error("Unable to parse book fragment. Cause: ", e);
         }
 
         nodeMap.forEach((fileName, node) -> {
@@ -94,12 +94,16 @@ public class ParsingService {
         switch (tagName) {
             case TITLE -> {
                 event = reader.nextEvent();
-                String title = event.asCharacters().getData();
+                String title = event.asCharacters()
+                        .getData()
+                        .strip();
                 fragmentDto.setTitle(title);
             }
             case BODY -> {
                 event = reader.nextEvent();
-                String body = event.asCharacters().getData();
+                String body = event.asCharacters()
+                        .getData()
+                        .strip();
                 fragmentDto.setBody(body);
             }
             default -> fragmentDto.setType(tagName);

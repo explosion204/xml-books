@@ -32,7 +32,6 @@ public class BookFragmentService {
     }
 
     public String save(BookFragmentDto fragmentDto) {
-        // TODO: 11/5/2021 validation
         BookFragment fragment = fragmentDto.toFragment();
         BookFragment savedFragment = bookFragmentRepository.save(fragment);
         return savedFragment.getId();

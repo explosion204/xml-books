@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<content>
+    <section>
+        <title>Pronunciation</title>
+        <body>
+            The languages only differ in their grammar, their pronunciation and their most common words. Everyone realizes why a new common language would be desirable: one could refuse to pay expensive translators. To achieve this, it would be necessary to have uniform grammar, pronunciation and more common words.
+        </body>
+    </section>
+    <?content-link file="section-5.xml"?>
+</content>
