@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,6 +75,25 @@ class BookFragmentServiceTest {
         String actualId = service.save(fragmentDto);
 
         assertEquals(expectedId, actualId);
+    }
+
+    @Test
+    void testDelete() {
+        BookFragment fragment = provideBookFragmentList().get(0);
+        when(repository.findById(fragment.getId())).thenReturn(Optional.of(fragment));
+
+        List<BookFragment> linkedFragments = provideBookFragmentList()
+                .stream()
+                .skip(1)
+                .toList();
+        when(repository.findByNextFragmentId(fragment.getId())).thenReturn(linkedFragments);
+
+        service.delete(fragment.getId());
+
+        verify(repository).delete(fragment);
+        verify(repository).findByNextFragmentId(fragment.getId());
+
+        assertTrue(linkedFragments.stream().anyMatch(linkedFragment -> linkedFragment.getNextFragmentId() == null));
     }
 
     private List<BookFragment> provideBookFragmentList() {

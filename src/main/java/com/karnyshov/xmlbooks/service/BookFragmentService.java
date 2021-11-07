@@ -36,4 +36,15 @@ public class BookFragmentService {
         BookFragment savedFragment = bookFragmentRepository.save(fragment);
         return savedFragment.getId();
     }
+
+    public void delete(String id) {
+        BookFragment fragment = bookFragmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(BookFragment.class));
+        bookFragmentRepository.delete(fragment);
+        bookFragmentRepository.findByNextFragmentId(id)
+                .forEach(linkedFragment -> {
+                    linkedFragment.setNextFragmentId(null);
+                    bookFragmentRepository.save(linkedFragment);
+                });
+    }
 }
