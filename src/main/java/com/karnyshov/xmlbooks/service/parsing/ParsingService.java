@@ -29,7 +29,6 @@ public class ParsingService {
     private static final Logger logger = LoggerFactory.getLogger(ParsingService.class);
     private static final Pattern contentLinkPattern = Pattern.compile("<\\?content-link file=\"(.+)\"\\?>");
 
-
     public List<BookFragmentDtoNode> parseXml(List<String> fileNames) {
         Map<String, BookFragmentDtoNode> nodeMap = new HashMap<>();
         Map<String, String> fileReferences = new HashMap<>();
@@ -83,6 +82,8 @@ public class ParsingService {
                 parseEndElement(event, fragmentDto, fileName, nodeMap);
             }
         }
+
+        reader.close();
     }
 
     private void parseStartElement(XMLEventReader reader, XMLEvent event, BookFragmentDto fragmentDto)

@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+    implementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo:$embeddedMongoVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-mongodb:$bootVersion"
     implementation "org.springframework.boot:spring-boot-starter-web:$bootVersion"
 
@@ -23,7 +24,6 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
     testImplementation "org.springframework.boot:spring-boot-starter-test:$bootVersion"
-    testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo:$embeddedMongoVersion"
 }
 
 test {

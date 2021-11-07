@@ -39,7 +39,7 @@ public class ParseCommandLineRunner implements CommandLineRunner {
                                 persistNode(node);
                             }
                         });
-
+                logger.info("Specified XML files successfully parsed and pushed to the database");
             }
         }
     }
