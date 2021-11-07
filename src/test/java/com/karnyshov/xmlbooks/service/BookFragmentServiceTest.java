@@ -3,10 +3,14 @@ package com.karnyshov.xmlbooks.service;
 import com.karnyshov.xmlbooks.model.BookFragment;
 import com.karnyshov.xmlbooks.repository.BookFragmentRepository;
 import com.karnyshov.xmlbooks.service.dto.BookFragmentDto;
+import com.karnyshov.xmlbooks.service.dto.BookFragmentFilterDto;
 import com.karnyshov.xmlbooks.service.pagination.PageContext;
+import com.querydsl.core.types.Predicate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,15 +18,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @ExtendWith(MockitoExtension.class)
 class BookFragmentServiceTest {
@@ -34,24 +45,48 @@ class BookFragmentServiceTest {
     @Mock
     private BookFragmentRepository repository;
 
+    @Captor
+    private ArgumentCaptor<Sort> sortCaptor;
+
     @BeforeAll
     static void setUp() {
         MockitoAnnotations.openMocks(BookFragmentServiceTest.class);
     }
 
     @Test
-    void testFindAll() {
+    void testFindWithoutSort() {
+        BookFragmentFilterDto filterDto = new BookFragmentFilterDto();
+
         List<BookFragment> bookFragments = provideBookFragmentList();
         PageContext pageContext = PageContext.of(1, bookFragments.size());
-        PageRequest pageRequest = pageContext.toPageRequest();
         Page<BookFragment> page = new PageImpl<>(bookFragments);
-        when(repository.findAll(pageRequest)).thenReturn(page);
+        when(repository.findAll(any(Predicate.class), any(PageRequest.class))).thenReturn(page);
 
         List<BookFragmentDto> expectedList = provideBookFragmentDtoList();
-        List<BookFragmentDto> actualList = service.findAll(pageContext)
+        List<BookFragmentDto> actualList = service.find(filterDto, pageContext)
                 .getData();
 
         assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    void testFind() {
+        String sortBy = "asc(title),desc(section)";
+        BookFragmentFilterDto filterDto = new BookFragmentFilterDto(null, null, sortBy);
+        List<BookFragment> bookFragments = provideBookFragmentList();
+        PageContext pageContext = spy(PageContext.of(1, bookFragments.size()));
+        Page<BookFragment> page = new PageImpl<>(bookFragments);
+        when(repository.findAll(any(Predicate.class), any(PageRequest.class))).thenReturn(page);
+
+        service.find(filterDto, pageContext);
+
+        verify(pageContext).toPageRequest(sortCaptor.capture());
+        Sort capturedSort = sortCaptor.getValue();
+
+        Map<String, Sort.Direction> expectedMap = Map.of("title", ASC, "section", DESC);
+        Map<String, Sort.Direction> actualMap = capturedSort.get()
+                .collect(Collectors.toMap(Sort.Order::getProperty, Sort.Order::getDirection));
+        assertEquals(expectedMap, actualMap);
     }
 
     @Test

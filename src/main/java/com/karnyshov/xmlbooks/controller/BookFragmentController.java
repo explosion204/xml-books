@@ -2,11 +2,13 @@ package com.karnyshov.xmlbooks.controller;
 
 import com.karnyshov.xmlbooks.service.BookFragmentService;
 import com.karnyshov.xmlbooks.service.dto.BookFragmentDto;
+import com.karnyshov.xmlbooks.service.dto.BookFragmentFilterDto;
 import com.karnyshov.xmlbooks.service.pagination.PageContext;
 import com.karnyshov.xmlbooks.service.pagination.PaginationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,11 +28,12 @@ public class BookFragmentController {
 
     @GetMapping
     public ResponseEntity<PaginationModel<BookFragmentDto>> getAll(
+            @ModelAttribute BookFragmentFilterDto filterDto,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize
     ) {
         PageContext pageContext = PageContext.of(page, pageSize);
-        PaginationModel<BookFragmentDto> paginationModel = bookFragmentService.findAll(pageContext);
+        PaginationModel<BookFragmentDto> paginationModel = bookFragmentService.find(filterDto, pageContext);
         return new ResponseEntity<>(paginationModel, OK);
     }
 

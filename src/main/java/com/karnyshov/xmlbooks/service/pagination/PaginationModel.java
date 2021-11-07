@@ -17,7 +17,7 @@ public class PaginationModel<T> {
         PaginationModel<T> paginationModel = new PaginationModel<>();
 
         paginationModel.data = page.getContent();
-        paginationModel.pageNumber = page.getNumber() + 1; // zero based
+        paginationModel.pageNumber = page.getNumber() + 1;
         paginationModel.pageSize = page.getSize();
         paginationModel.totalPages = page.getTotalPages();
         paginationModel.totalEntities = page.getTotalElements();

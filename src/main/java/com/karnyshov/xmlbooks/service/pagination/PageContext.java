@@ -2,6 +2,7 @@ package com.karnyshov.xmlbooks.service.pagination;
 
 import com.karnyshov.xmlbooks.exception.InvalidPageContextException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import static com.karnyshov.xmlbooks.exception.InvalidPageContextException.ErrorType.INVALID_PAGE_NUMBER;
 import static com.karnyshov.xmlbooks.exception.InvalidPageContextException.ErrorType.INVALID_PAGE_SIZE;
@@ -42,6 +43,10 @@ public class PageContext {
     }
 
     public PageRequest toPageRequest() {
-        return PageRequest.of(page - 1, pageSize);
+        return toPageRequest(Sort.unsorted());
+    }
+
+    public PageRequest toPageRequest(Sort sort) {
+        return PageRequest.of(page - 1, pageSize, sort);
     }
 }
