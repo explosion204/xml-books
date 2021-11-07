@@ -1,5 +1,6 @@
 package com.karnyshov.xmlbooks.service.parsing;
 
+import com.karnyshov.xmlbooks.model.BookFragment;
 import com.karnyshov.xmlbooks.service.dto.BookFragmentDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +25,26 @@ import static com.karnyshov.xmlbooks.service.parsing.XmlTagName.BODY;
 import static com.karnyshov.xmlbooks.service.parsing.XmlTagName.CONTENT;
 import static com.karnyshov.xmlbooks.service.parsing.XmlTagName.TITLE;
 
+/**
+ * This service class encapsulated business logic related to {@link BookFragment} parsing from XML.
+ * A StAX parser is used as XML parser.
+ */
 @Service
 public class ParsingService {
     private static final Logger logger = LoggerFactory.getLogger(ParsingService.class);
     private static final Pattern contentLinkPattern = Pattern.compile("<\\?content-link file=\"(.+)\"\\?>");
 
+    /**
+     * Parse XML files.
+     *
+     * @param fileNames names of XML files
+     * @return list of {@link BookFragmentDtoNode} graph nodes.
+     */
     public List<BookFragmentDtoNode> parseXml(List<String> fileNames) {
+        // XML file name -> parsed node
         Map<String, BookFragmentDtoNode> nodeMap = new HashMap<>();
+
+        // XML file name -> linked (next) XML file name
         Map<String, String> fileReferences = new HashMap<>();
 
         try {
@@ -41,6 +55,7 @@ public class ParsingService {
             logger.error("Unable to parse book fragment. Cause: ", e);
         }
 
+        // link parsed nodes
         nodeMap.forEach((fileName, node) -> {
             if (fileReferences.containsKey(fileName)) {
                 String linkedFileName = fileReferences.get(fileName);
@@ -61,6 +76,7 @@ public class ParsingService {
                 BookFragmentDtoNode> nodeMap) throws XMLStreamException {
 
         BookFragmentDto fragmentDto = new BookFragmentDto();
+        // we use just a file name (not absolute paths) to link nodes to each other
         String fileName = new File(filePath).getName();
 
         Source source = new StreamSource(filePath);
@@ -112,6 +128,7 @@ public class ParsingService {
     }
 
     private void parseProcessingInstruction(XMLEvent event, String fileName, Map<String, String> fileReferences) {
+        // parsing processing instruction regarding linked XML file
         String processingInstruction = event.toString();
         Matcher matcher = contentLinkPattern.matcher(processingInstruction);
 

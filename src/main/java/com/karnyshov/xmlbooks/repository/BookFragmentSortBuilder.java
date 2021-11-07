@@ -1,11 +1,16 @@
 package com.karnyshov.xmlbooks.repository;
 
+import com.karnyshov.xmlbooks.model.BookFragment;
 import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * This class is used to build a {@link Sort} object for ordering {@link BookFragment} entites.
+ */
 public class BookFragmentSortBuilder {
     private final List<Sort.Order> orders = new ArrayList<>();
 

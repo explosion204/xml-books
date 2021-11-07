@@ -16,6 +16,7 @@ import java.util.Map;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+
 @RestControllerAdvice
 public class ControllerExceptionHandler {
     private static final String ENTITY_NOT_FOUND_ERROR_MESSAGE = "entity_not_found";

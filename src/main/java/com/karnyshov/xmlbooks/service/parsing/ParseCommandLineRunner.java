@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The command line runner used to acquire arguments and delegate a parsing process to {@link ParsingService}.
+ */
 @Component
 public class ParseCommandLineRunner implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(ParseCommandLineRunner.class);
@@ -33,6 +36,7 @@ public class ParseCommandLineRunner implements CommandLineRunner {
             List<String> fileNames = extractFileNames(args);
 
             if (fileNames != null) {
+                // parse XML files and persist parsed graph
                 parsingService.parseXml(fileNames)
                         .forEach(node -> {
                             if (!node.isSaved()) {
@@ -48,10 +52,12 @@ public class ParseCommandLineRunner implements CommandLineRunner {
         List<String> fileNames = new ArrayList<>();
 
         if (args[1].equals(FILE_PARAM)) {
+            // "java -jar {JAR_NAME}.jar -f <FILE_1> ... <FILE_2>"
             fileNames = Arrays.stream(args)
                     .skip(2)
                     .toList();
         } else if (args[1].equals(DIRECTORY_PARAM)) {
+            // "java -jar {JAR_NAME}.jar -d <DIR>"
             String directoryPath = args[2];
             File directory = new File(directoryPath);
             File[] files = directory.listFiles();
@@ -71,6 +77,7 @@ public class ParseCommandLineRunner implements CommandLineRunner {
     }
 
     private void persistNode(BookFragmentDtoNode node) {
+        // saving parsed graph to the database
         BookFragmentDtoNode nextNode = node.getNextNode();
 
         if (nextNode != null && !nextNode.isSaved()) {

@@ -23,6 +23,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ * This service class encapsulated business logic related to {@link BookFragment} entity.
+ */
 @Service
 public class BookFragmentService {
     private static final Logger logger = LoggerFactory.getLogger(BookFragmentService.class);
@@ -33,6 +36,14 @@ public class BookFragmentService {
         this.repository = repository;
     }
 
+    /**
+     * Retrieve book fragments according to specified parameters.
+     * All parameters are optional, so if they are not present, all fragments will be retrieved.
+     *
+     * @param filterDto   {@link BookFragmentFilterDto} instance
+     * @param pageContext {@link PageContext} object with pagination logic
+     * @return {@link PaginationModel} object that contains list of {@link PaginationModel} objects
+     */
     public PaginationModel<BookFragmentDto> find(BookFragmentFilterDto filterDto, PageContext pageContext) {
         Predicate predicate = new BookFragmentPredicateBuilder()
                 .type(filterDto.getType())
@@ -57,22 +68,42 @@ public class BookFragmentService {
         return PaginationModel.fromPage(page);
     }
 
+    /**
+     * Retrieve book fragment by its unique id.
+     *
+     * @param id fragment id
+     * @throws EntityNotFoundException in case when certificate with this id does not exist
+     * @return {@link BookFragmentDto} object
+     */
     public BookFragmentDto findById(String id) {
         BookFragment fragment = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BookFragment.class));
         return new BookFragmentDto(fragment, true);
     }
 
+    /**
+     * Save a book fragment.
+     *
+     * @param fragmentDto {@link BookFragmentDto} instance
+     * @return {@link String} id of saved fragment
+     */
     public String save(BookFragmentDto fragmentDto) {
         BookFragment fragment = fragmentDto.toFragment();
         BookFragment savedFragment = repository.save(fragment);
         return savedFragment.getId();
     }
 
+    /**
+     * Delete an existing fragment.
+     *
+     * @param id fragment id
+     * @throws EntityNotFoundException in case when certificate with this id does not exist
+     */
     public void delete(String id) {
         BookFragment fragment = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(BookFragment.class));
         repository.delete(fragment);
+        // set to NULL all foreign keys
         repository.findByNextFragmentId(id)
                 .forEach(linkedFragment -> {
                     linkedFragment.setNextFragmentId(null);

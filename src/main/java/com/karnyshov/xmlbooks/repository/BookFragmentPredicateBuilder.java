@@ -1,10 +1,15 @@
 package com.karnyshov.xmlbooks.repository;
 
+import com.karnyshov.xmlbooks.model.BookFragment;
 import com.karnyshov.xmlbooks.model.QBookFragment;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
+
+/**
+ * This class is used to build a predicate for filtering {@link BookFragment} entites.
+ */
 public class BookFragmentPredicateBuilder {
     private final BooleanBuilder booleanBuilder = new BooleanBuilder();
 

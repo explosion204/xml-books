@@ -7,6 +7,10 @@ import org.springframework.data.domain.Sort;
 import static com.karnyshov.xmlbooks.exception.InvalidPageContextException.ErrorType.INVALID_PAGE_NUMBER;
 import static com.karnyshov.xmlbooks.exception.InvalidPageContextException.ErrorType.INVALID_PAGE_SIZE;
 
+
+/**
+ * Context class used for pagination purposes.
+ */
 public class PageContext {
     private static final int MIN_PAGE = 1;
     private static final int MIN_PAGE_SIZE = 0;
