@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Document
 @QueryEntity
 @Data
@@ -15,8 +17,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BookFragment {
     @Id
     private String id;
-    private String type;
     private String title;
+    private LocalDateTime creationTime;
     private String body;
     private String nextFragmentId;
 }

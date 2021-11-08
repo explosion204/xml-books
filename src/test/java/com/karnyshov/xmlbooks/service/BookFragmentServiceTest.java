@@ -20,12 +20,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.time.ZoneOffset.UTC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +40,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @ExtendWith(MockitoExtension.class)
 class BookFragmentServiceTest {
     private static final String DUMMY_STRING = "dummy";
+    private static final LocalDateTime DUMMY_TIME = LocalDateTime.now(UTC);
 
     @InjectMocks
     private BookFragmentService service;
@@ -71,8 +74,8 @@ class BookFragmentServiceTest {
 
     @Test
     void testFind() {
-        String sortBy = "asc(title),desc(section)";
-        BookFragmentFilterDto filterDto = new BookFragmentFilterDto(null, null, sortBy);
+        String sortBy = "asc(title),desc(creationTime)";
+        BookFragmentFilterDto filterDto = new BookFragmentFilterDto(null, sortBy);
         List<BookFragment> bookFragments = provideBookFragmentList();
         PageContext pageContext = spy(PageContext.of(1, bookFragments.size()));
         Page<BookFragment> page = new PageImpl<>(bookFragments);
@@ -83,7 +86,7 @@ class BookFragmentServiceTest {
         verify(pageContext).toPageRequest(sortCaptor.capture());
         Sort capturedSort = sortCaptor.getValue();
 
-        Map<String, Sort.Direction> expectedMap = Map.of("title", ASC, "section", DESC);
+        Map<String, Sort.Direction> expectedMap = Map.of("title", ASC, "creationTime", DESC);
         Map<String, Sort.Direction> actualMap = capturedSort.get()
                 .collect(Collectors.toMap(Sort.Order::getProperty, Sort.Order::getDirection));
         assertEquals(expectedMap, actualMap);
@@ -133,21 +136,21 @@ class BookFragmentServiceTest {
 
     private List<BookFragment> provideBookFragmentList() {
         return new ArrayList<>() {{
-            add(new BookFragment("1", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
-            add(new BookFragment("2", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
-            add(new BookFragment("3", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
-            add(new BookFragment("4", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
-            add(new BookFragment("5", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
+            add(new BookFragment("1", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
+            add(new BookFragment("2", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
+            add(new BookFragment("3", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
+            add(new BookFragment("4", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
+            add(new BookFragment("5", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
         }};
     }
 
     private List<BookFragmentDto> provideBookFragmentDtoList() {
         return new ArrayList<>() {{
-            add(new BookFragmentDto("1", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
-            add(new BookFragmentDto("2", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
-            add(new BookFragmentDto("3", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
-            add(new BookFragmentDto("4", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
-            add(new BookFragmentDto("5", DUMMY_STRING, DUMMY_STRING, null, DUMMY_STRING));
+            add(new BookFragmentDto("1", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
+            add(new BookFragmentDto("2", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
+            add(new BookFragmentDto("3", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
+            add(new BookFragmentDto("4", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
+            add(new BookFragmentDto("5", DUMMY_STRING, DUMMY_TIME, null, DUMMY_STRING));
         }};
     }
 }

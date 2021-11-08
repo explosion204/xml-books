@@ -2,6 +2,7 @@ package com.karnyshov.xmlbooks.service.parsing;
 
 import com.karnyshov.xmlbooks.model.BookFragment;
 import com.karnyshov.xmlbooks.service.dto.BookFragmentDto;
+import com.karnyshov.xmlbooks.service.validation.BookFragmentXmlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,9 @@ import java.util.regex.Pattern;
 
 import static com.karnyshov.xmlbooks.service.parsing.XmlTagName.BODY;
 import static com.karnyshov.xmlbooks.service.parsing.XmlTagName.CONTENT;
+import static com.karnyshov.xmlbooks.service.parsing.XmlTagName.SECTION;
 import static com.karnyshov.xmlbooks.service.parsing.XmlTagName.TITLE;
+import static java.time.ZoneOffset.UTC;
 
 /**
  * This service class encapsulated business logic related to {@link BookFragment} parsing from XML.
@@ -33,6 +37,12 @@ import static com.karnyshov.xmlbooks.service.parsing.XmlTagName.TITLE;
 public class ParsingService {
     private static final Logger logger = LoggerFactory.getLogger(ParsingService.class);
     private static final Pattern contentLinkPattern = Pattern.compile("<\\?content-link file=\"(.+)\"\\?>");
+
+    private final BookFragmentXmlValidator validator;
+
+    public ParsingService(BookFragmentXmlValidator validator) {
+        this.validator = validator;
+    }
 
     /**
      * Parse XML files.
@@ -49,7 +59,11 @@ public class ParsingService {
 
         try {
             for (String fileName : fileNames) {
-                parseBookFragment(fileName, fileReferences, nodeMap);
+                if (validator.validateXmlFile(fileName)) {
+                    parseBookFragment(fileName, fileReferences, nodeMap);
+                } else {
+                    logger.error("Invalid XML file '{}'", fileName);
+                }
             }
         } catch (XMLStreamException e) {
             logger.error("Unable to parse book fragment. Cause: ", e);
@@ -123,7 +137,10 @@ public class ParsingService {
                         .strip();
                 fragmentDto.setBody(body);
             }
-            default -> fragmentDto.setType(tagName);
+            case CONTENT, SECTION -> {
+                // no action required
+            }
+            default -> throw new IllegalArgumentException("Invalid tag name");
         }
     }
 
@@ -145,6 +162,9 @@ public class ParsingService {
         String tagName = endElement.getName().getLocalPart();
 
         if (tagName.equals(CONTENT)) {
+            LocalDateTime creationTime = LocalDateTime.now(UTC);
+            fragmentDto.setCreationTime(creationTime);
+
             BookFragmentDtoNode node = new BookFragmentDtoNode();
             node.setBookFragmentDto(fragmentDto);
             nodeMap.put(fileName, node);

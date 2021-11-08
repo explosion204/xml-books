@@ -15,11 +15,21 @@ public class BookFragmentSortBuilder {
     private final List<Sort.Order> orders = new ArrayList<>();
 
     public enum SortField {
-        SECTION, TITLE;
+        TITLE("title"), CREATION_TIME("creationTime");
+
+        private final String value;
+
+        SortField(String value) {
+            this.value = value;
+        }
+
+        String getValue() {
+            return value;
+        }
 
         public static boolean hasField(String fieldName) {
             return Arrays.stream(values())
-                    .map(Enum::name)
+                    .map(SortField::getValue)
                     .anyMatch(value -> value.equalsIgnoreCase(fieldName));
         }
     }

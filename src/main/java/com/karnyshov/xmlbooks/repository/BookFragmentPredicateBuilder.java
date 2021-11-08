@@ -13,16 +13,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 public class BookFragmentPredicateBuilder {
     private final BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-    public BookFragmentPredicateBuilder type(String type) {
-        if (type != null) {
-            QBookFragment qBookFragment = QBookFragment.bookFragment;
-            BooleanExpression typePredicate = qBookFragment.type.containsIgnoreCase(type);
-            booleanBuilder.and(typePredicate);
-        }
-
-        return this;
-    }
-
     public BookFragmentPredicateBuilder title(String title) {
         if (title != null) {
             QBookFragment qBookFragment = QBookFragment.bookFragment;

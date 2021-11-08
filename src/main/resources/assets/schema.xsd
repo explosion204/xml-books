@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema elementFormDefault="qualified"
+           xmlns="http://www.w3.org/2001/XMLSchema">
+
+    <element name="content">
+        <complexType>
+            <sequence>
+                <element name="section">
+                    <complexType>
+                        <sequence>
+                            <element name="title" type="string" />
+                            <element name="body" type="string" />
+                        </sequence>
+                    </complexType>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+</schema>

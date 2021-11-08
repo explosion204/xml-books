@@ -1,6 +1,7 @@
 package com.karnyshov.xmlbooks.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.karnyshov.xmlbooks.model.BookFragment;
 import com.karnyshov.xmlbooks.service.dto.BookFragmentDto;
 import com.karnyshov.xmlbooks.service.pagination.PageContext;
@@ -22,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static java.time.ZoneOffset.UTC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,7 +43,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class BookFragmentControllerTest {
+    private static final LocalDateTime DUMMY_TIME = LocalDateTime.now(UTC);
     private static List<BookFragment> fragmentList;
+    private static ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,17 +61,20 @@ class BookFragmentControllerTest {
 
         firstFragment.setTitle("afragment1 title");
         firstFragment.setBody("fragment1 body");
-        firstFragment.setType("section");
+        firstFragment.setCreationTime(DUMMY_TIME);
 
         secondFragment.setTitle("cfragment2 title");
         secondFragment.setBody("fragment2 body");
-        secondFragment.setType("section");
+        secondFragment.setCreationTime(DUMMY_TIME);
 
         thirdFragment.setTitle("bfragment3 title");
         thirdFragment.setBody("fragment3 body");
-        thirdFragment.setType("section");
+        thirdFragment.setCreationTime(DUMMY_TIME);
 
         fragmentList = List.of(firstFragment, secondFragment, thirdFragment);
+
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     @ParameterizedTest
@@ -78,7 +86,7 @@ class BookFragmentControllerTest {
         Page<BookFragmentDto> page = new PageImpl<>(expectedDtoList, pageContext.toPageRequest(), total);
 
         PaginationModel<BookFragmentDto> expectedModel = PaginationModel.fromPage(page);
-        String expectedResponse = new ObjectMapper().writeValueAsString(expectedModel);
+        String expectedResponse = objectMapper.writeValueAsString(expectedModel);
 
         MockHttpServletRequestBuilder requestBuilder = get("/books");
         for (Map.Entry<String, String> param : queryParams.entrySet()) {
@@ -95,7 +103,7 @@ class BookFragmentControllerTest {
     @Test
     void testGetFragmentById() throws Exception {
         BookFragmentDto expectedDto = provideFragmentDtoList().get(0);
-        String expectedResponse = new ObjectMapper().writeValueAsString(expectedDto);
+        String expectedResponse = objectMapper.writeValueAsString(expectedDto);
 
         mockMvc.perform(get("/books/" + expectedDto.getId()))
                 .andExpect(content().json(expectedResponse));

@@ -43,7 +43,6 @@ public class BookFragmentService {
      */
     public PaginationModel<BookFragmentDto> find(BookFragmentFilterDto filterDto, PageContext pageContext) {
         Predicate predicate = new BookFragmentPredicateBuilder()
-                .type(filterDto.getType())
                 .title(filterDto.getTitle())
                 .build();
 

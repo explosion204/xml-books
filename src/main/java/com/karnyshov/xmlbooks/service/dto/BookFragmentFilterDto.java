@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookFragmentFilterDto {
-    private String type;
     private String title;
     private String sortBy;
 }
