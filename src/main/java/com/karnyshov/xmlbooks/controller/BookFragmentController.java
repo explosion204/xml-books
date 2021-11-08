@@ -57,7 +57,7 @@ public class BookFragmentController {
      * Retrieve book fragment by its unique id.
      *
      * @param id fragment id
-     * @throws EntityNotFoundException in case when certificate with this id does not exist
+     * @throws EntityNotFoundException in case when fragment with this id does not exist
      * @return JSON {@link ResponseEntity} object that contains {@link BookFragmentDto} object
      */
     @GetMapping("/{id}")
@@ -70,7 +70,7 @@ public class BookFragmentController {
      * Delete an existing fragment.
      *
      * @param id fragment id
-     * @throws EntityNotFoundException in case when certificate with this id does not exist
+     * @throws EntityNotFoundException in case when fragment with this id does not exist
      * @return empty {@link ResponseEntity}
      */
     @DeleteMapping("/{id}")

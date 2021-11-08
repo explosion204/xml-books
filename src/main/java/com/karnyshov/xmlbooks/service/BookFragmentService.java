@@ -69,7 +69,7 @@ public class BookFragmentService {
      * Retrieve book fragment by its unique id.
      *
      * @param id fragment id
-     * @throws EntityNotFoundException in case when certificate with this id does not exist
+     * @throws EntityNotFoundException in case when fragment with this id does not exist
      * @return {@link BookFragmentDto} object
      */
     public BookFragmentDto findById(String id) {
@@ -94,7 +94,7 @@ public class BookFragmentService {
      * Delete an existing fragment.
      *
      * @param id fragment id
-     * @throws EntityNotFoundException in case when certificate with this id does not exist
+     * @throws EntityNotFoundException in case when fragment with this id does not exist
      */
     public void delete(String id) {
         BookFragment fragment = repository.findById(id)

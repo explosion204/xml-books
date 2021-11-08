@@ -37,13 +37,16 @@ public class ParseCommandLineRunner implements CommandLineRunner {
 
             if (fileNames != null) {
                 // parse XML files and persist parsed graph
-                parsingService.parseXml(fileNames)
-                        .forEach(node -> {
-                            if (!node.isSaved()) {
-                                persistNode(node);
-                            }
-                        });
-                logger.info("Specified XML files successfully parsed and pushed to the database");
+                List<BookFragmentDtoNode> parsedNodes = parsingService.parseXml(fileNames);
+                parsedNodes.forEach(node -> {
+                    if (!node.isSaved()) {
+                        persistNode(node);
+                    }
+                });
+
+                if (!parsedNodes.isEmpty()) {
+                    logger.info("Specified XML files successfully parsed and pushed to the database");
+                }
             }
         }
     }
