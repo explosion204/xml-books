@@ -2,7 +2,6 @@ package com.karnyshov.xmlbooks.service.parsing;
 
 import com.karnyshov.xmlbooks.model.BookFragment;
 import com.karnyshov.xmlbooks.repository.BookFragmentRepository;
-import com.karnyshov.xmlbooks.service.TestConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,8 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;;
 import org.springframework.util.ResourceUtils;
 
@@ -24,8 +22,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataMongoTest
-@ContextConfiguration(classes = TestConfig.class)
+@SpringBootTest
 @ExtendWith(value = { SpringExtension.class, MockitoExtension.class })
 class ParseCommandLineRunnerTest {
     private static final String DUMMY_STRING = "dummy";
