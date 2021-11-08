@@ -10,8 +10,6 @@ import com.karnyshov.xmlbooks.service.dto.BookFragmentFilterDto;
 import com.karnyshov.xmlbooks.service.pagination.PageContext;
 import com.karnyshov.xmlbooks.service.pagination.PaginationModel;
 import com.querydsl.core.types.Predicate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,7 +26,6 @@ import java.util.regex.Pattern;
  */
 @Service
 public class BookFragmentService {
-    private static final Logger logger = LoggerFactory.getLogger(BookFragmentService.class);
     private static final Pattern sortStringPattern = Pattern.compile("(asc|desc)\\((.*?)\\)");
     private final BookFragmentRepository repository;
 
@@ -118,13 +115,8 @@ public class BookFragmentService {
         while (matcher.find()) {
             String directionString = matcher.group(1);
             String fieldName = matcher.group(2);
-
-            try {
-                Sort.Direction direction = Sort.Direction.valueOf(directionString.toUpperCase());
-                sortMap.put(fieldName, direction);
-            } catch (EnumConstantNotPresentException e) {
-                logger.error("Invalid sorting direction '{}'", directionString);
-            }
+            Sort.Direction direction = Sort.Direction.valueOf(directionString.toUpperCase());
+            sortMap.put(fieldName, direction);
         }
 
         return sortMap;
